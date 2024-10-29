@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>書籍查詢</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .book-list {
+            margin-top: 20px;
+        }
+        .book-item {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .pagination {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>書籍查詢</h1>
+    <form id="searchForm">
+        <label for="category">類別:</label>
+        <select id="category" name="category">
+            <option value="">所有</option>
+            <option value="繪本">繪本</option>
+            <option value="心理勵志">心理勵志</option>
+            <option value="漫畫">漫畫</option>
+            <option value="商業理財">商業理財</option>
+            <option value="自傳">自傳</option>
+        </select>
+
+        <label for="search">書名:</label>
+        <input type="text" id="search" name="search" placeholder="輸入書名"/>
+
+        <button type="submit">查詢</button>
+    </form>
+
+    <div class="book-list" id="bookList"></div>
+
+    <div class="pagination" id="pagination">
+        <button id="prevButton" disabled>上一頁</button>
+        <button id="nextButton" disabled>下一頁</button>
+    </div>
+
+    <script>
+        let currentPage = 0; // 當前頁數
+        const limit = 1; // 每頁顯示的書籍數量
+
+        document.getElementById('searchForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // 防止表單默認提交
+            currentPage = 0; // 重置到第一頁
+            fetchBooks();
+        });
+
+        document.getElementById('prevButton').addEventListener('click', function() {
+            if (currentPage > 0) {
+                currentPage--;
+                fetchBooks();
+            }
+        });
+
+        document.getElementById('nextButton').addEventListener('click', function() {
+            currentPage++;
+            fetchBooks();
+        });
+
+        function fetchBooks() {
+            const category = document.getElementById('category').value;
+            const search = document.getElementById('search').value;
+
+            // 構造請求 URL
+            let url = `/books?limit=${limit}&offset=${currentPage * limit}`;
+            if (category) {
+                url += `&category=${encodeURIComponent(category)}`;
+            }
+            if (search) {
+                url += `&search=${encodeURIComponent(search)}`;
+            }
+
+            // 發送請求
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('網路錯誤');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // 處理 API 回傳的數據
+                    const bookList = document.getElementById('bookList');
+                    bookList.innerHTML = ''; // 清空舊資料
+
+                    // 檢查是否有書籍
+                    if (data.result.length > 0) {
+                        data.result.forEach(book => {
+                            const bookItem = document.createElement('div');
+                            bookItem.className = 'book-item';
+                            bookItem.innerHTML = `
+                                <strong>${book.bookName}</strong><br>
+                                類別: ${book.bookCategory}<br>
+                                作者: ${book.author}<br>
+                                價格: ${book.price}<br>
+                                庫存: ${book.stock}<br>
+                                創建日期: ${book.createdDate}<br>
+                            `;
+                            bookList.appendChild(bookItem);
+                        });
+
+                        // 更新分頁按鈕狀態
+                        document.getElementById('prevButton').disabled = currentPage === 0; // 如果在第一頁，禁用上一頁按鈕
+                        document.getElementById('nextButton').disabled = data.result.length < limit; // 如果返回的結果少於限制，禁用下一頁按鈕
+                    } else {
+                        // 如果沒有結果，顯示提示信息
+                        bookList.innerHTML = '<p>找不到書籍。</p>';
+                        document.getElementById('prevButton').disabled = true;
+                        document.getElementById('nextButton').disabled = true;
+                    }
+                })
+                .catch(error => {
+                    console.error('發生錯誤:', error);
+                });
+        }
+    </script>
+</body>
+</html>

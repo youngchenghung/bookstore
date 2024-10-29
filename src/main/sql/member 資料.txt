@@ -1,0 +1,40 @@
+CREATE DATABASE bookstore;
+
+USE bookstore;
+
+CREATE TABLE member
+(
+    member_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    email VARCHAR(256) NOT NULL UNIQUE KEY,
+    password VARCHAR(256) NOT NULL,
+    name VARCHAR(256) NOT NULL,
+    age INT NOT NULL
+);
+
+INSERT INTO member(email, password, name, age) VALUES ('test1@gmail.com', 111, 'TEST1', '20');
+INSERT INTO member(email, password, name, age) VALUES ('test2@gmail.com', 222, 'TEST2', '30');
+INSERT INTO member(email, password, name, age) VALUES ('test3@gmail.com', 333, 'TEST3', '40');
+
+CREATE TABLE role (
+    role_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    role_name VARCHAR(256) NOT NULL
+);
+
+INSERT INTO role(role_name) VALUES ('ROLE_ADMIN');
+INSERT INTO role(role_name) VALUES ('ROLE_NORMAL_MEMBER');
+INSERT INTO role(role_name) VALUES ('ROLE_VIP_MEMBER');
+
+CREATE TABLE member_has_role (
+    member_has_role_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    member_id INT NOT NULL,
+    role_id INT NOT NULL
+);
+
+INSERT INTO member_has_role (member_id, role_id) VALUES (1, 1);
+INSERT INTO member_has_role (member_id, role_id) VALUES (2, 2);
+
+# 查詢 member, role, member_has_role 關聯表
+SELECT member.member_id, member.email, role.role_name 
+FROM member 
+JOIN member_has_role ON member.member_id = member_has_role.member_id 
+JOIN role ON member_has_role.role_id = role.role_id;

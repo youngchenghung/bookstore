@@ -1,0 +1,35 @@
+CREATE TABLE book
+(
+    book_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    book_name VARCHAR(256) NOT NULL UNIQUE KEY,
+    author VARCHAR(256) NOT NULL,
+    price INT NOT NULL,
+    stock INT NOT NULL
+);
+
+INSERT INTO book(book_name, author, price, stock) VALUES ('你願意，人生就會值得：蔡康永的情商課3', '蔡康永', 316, 20);
+INSERT INTO book(book_name, author, price, stock) VALUES ('體能UP1年級生：高木直子元氣滿滿大作戰', '高木直子', 300, 20);
+INSERT INTO book(book_name, author, price, stock) VALUES ('ONE PIECE航海王 109', '尾田榮一郎', 109, 10);
+INSERT INTO book(book_name, author, price, stock) VALUES ('連結：從石器時代到AI紀元（博客來獨家燙金書衣版）', '哈拉瑞', 533, 30);
+
+
+-- 在 book_name 欄位後插入 category 欄位
+ALTER TABLE book
+ADD COLUMN category VARCHAR(255) AFTER book_name;
+
+-- 在 stock 欄位後插入 created_date 欄位
+ALTER TABLE book
+ADD COLUMN created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP AFTER stock;
+
+-- 在 created_date 欄位後插入 last_modified_date 欄位
+ALTER TABLE book
+ADD COLUMN last_modified_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER created_date;
+
+
+CREATE TABLE member
+(
+    member_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    member_name VARCHAR(256) NOT NULL,
+    email VARCHAR(256) NOT NULL UNIQUE KEY,
+    password VARCHAR(256) NOT NULL
+);

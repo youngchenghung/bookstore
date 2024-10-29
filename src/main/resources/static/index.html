@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>書籍管理系統</title>
+    <script>
+        async function getBookInfo() {
+            const bookId = document.getElementById('getBookId').value;
+            const response = await fetch(`/book/${bookId}`);
+            const result = await response.json();
+            document.getElementById('output').innerText = JSON.stringify(result, null, 2);
+        }
+
+        async function addBook() {
+            const bookRequest = {
+                bookName: document.getElementById('addBookName').value,
+                author: document.getElementById('addAuthor').value,
+                category: document.getElementById('addCategory').value,
+                price: parseFloat(document.getElementById('addPrice').value),
+                stock: parseInt(document.getElementById('addStock').value),
+                createdDate: new Date().toISOString(),
+                lastedModifiedDate: new Date().toISOString()
+            };
+            const response = await fetch(`/book/add`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(bookRequest)
+            });
+            const result = await response.json();
+            document.getElementById('output').innerText = JSON.stringify(result, null, 2);
+        }
+
+        async function updateBook() {
+            const bookId = document.getElementById('updateBookId').value;
+            const bookRequest = {
+                bookName: document.getElementById('updateBookName').value,
+                author: document.getElementById('updateAuthor').value,
+                category: document.getElementById('updateCategory').value,
+                price: parseFloat(document.getElementById('updatePrice').value),
+                stock: parseInt(document.getElementById('updateStock').value),
+                lastedModifiedDate: new Date().toISOString()
+            };
+            const response = await fetch(`/book/update/${bookId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(bookRequest)
+            });
+            const result = await response.json();
+            document.getElementById('output').innerText = JSON.stringify(result, null, 2);
+        }
+
+        async function deleteBook() {
+            const bookId = document.getElementById('deleteBookId').value;
+            const response = await fetch(`/book/delete/${bookId}`, { method: 'DELETE' });
+            if (response.ok) {
+                document.getElementById('output').innerText = `書籍ID ${bookId} 刪除成功`;
+            } else {
+                document.getElementById('output').innerText = `書籍ID ${bookId} 刪除失敗`;
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>書籍管理系統</h1>
+
+    <section>
+        <h2>查詢書籍資訊</h2>
+        <input type="number" id="getBookId" placeholder="書籍ID">
+        <button onclick="getBookInfo()">查詢書籍</button>
+    </section>
+
+    <section>
+        <h2>新增書籍</h2>
+        <input type="text" id="addBookName" placeholder="書名">
+        <input type="text" id="addAuthor" placeholder="作者">
+        <input type="number" id="addPrice" placeholder="價格">
+        <input type="number" id="addStock" placeholder="庫存">
+        <button onclick="addBook()">新增書籍</button>
+    </section>
+
+    <section>
+        <h2>更新書籍</h2>
+        <input type="number" id="updateBookId" placeholder="書籍ID">
+        <input type="text" id="updateBookName" placeholder="書名">
+        <input type="text" id="updateAuthor" placeholder="作者">
+        <input type="number" id="updatePrice" placeholder="價格">
+        <input type="number" id="updateStock" placeholder="庫存">
+        <button onclick="updateBook()">更新書籍</button>
+    </section>
+
+    <section>
+        <h2>刪除書籍</h2>
+        <input type="number" id="deleteBookId" placeholder="書籍ID">
+        <button onclick="deleteBook()">刪除書籍</button>
+    </section>
+
+    <section>
+        <h2>操作結果</h2>
+        <pre id="output"></pre>
+    </section>
+</body>
+</html>
