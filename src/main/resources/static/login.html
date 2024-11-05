@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登入頁面</title>
+</head>
+<body>
+    <h1>登入</h1>
+    <form action="/login.html" method="post">
+        <div>
+            <label for="username">電子郵件:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div>
+            <label for="password">密碼:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <div>
+            <button type="submit">登入</button>
+        </div>
+    </form>
+
+    <!-- 顯示錯誤消息 -->
+    <div>
+        <script>
+            // 獲取當前 URL 的查詢參數
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('error')) {
+                document.write('<p style="color: red;">登入失敗，請檢查您的電子郵件和密碼。</p>');
+            }
+        </script>
+    </div>
+</body>
+</html>
