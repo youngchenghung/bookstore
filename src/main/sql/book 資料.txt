@@ -33,3 +33,7 @@ CREATE TABLE member
     email VARCHAR(256) NOT NULL UNIQUE KEY,
     password VARCHAR(256) NOT NULL
 );
+
+
+ALTER TABLE book
+ADD COLUMN image_url VARCHAR(255) NULL AFTER stock;

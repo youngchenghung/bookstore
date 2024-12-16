@@ -3,97 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <title>會員資料</title>
+    <link rel="stylesheet" href="/css/nav.css">
+    <link rel="stylesheet" href="/css/profile.css">
 </head>
 <body>
-    <h1>會員資料</h1>
-    <div id="user-info">
-        <p>會員名稱：<span id="name"></span></p>
-        <p>年齡：<span id="age"></span></p>
-        <p>電子郵件：<span id="email"></span></p>
-    </div>
 
-    <!-- 更新 Email 表單 -->
-    <div>
-        <h2>更新電子郵件</h2>
-        <input type="email" id="new-email" placeholder="輸入新的電子郵件" required>
-        <button id="update-email-btn">更新</button>
-    </div>
+    <!-- 導覽列 -->
+    <div id="navbar"></div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // 取得 URL 中的 memberId
-            const pathParts = window.location.pathname.split('/');
-            const memberId = pathParts[1]; // URL 格式為 /{memberId}/profile.html
-            
-            // 呼叫 API 取得使用者資訊
-            fetch(`/${memberId}/userInfo`)
-                .then(response => {
-                    if (response.ok) {
-                        return response.json();
-                    } else if (response.status === 403) {
-                        alert("您沒有權限查看此使用者的資料。");
-                    } else if (response.status === 404) {
-                        alert("找不到該使用者的資料。");
-                    }
-                })
-                .then(data => {
-                    if (data) {
-                        document.getElementById("name").textContent = data.name;
-                        document.getElementById("age").textContent = data.age;
-                        document.getElementById("email").textContent = data.email;
-                    }
-                })
-                .catch(error => {
-                    console.error("發生錯誤:", error);
-                });
+    <!-- 會員資料內容 -->
+    <main>
+        <h1>會員資料</h1>
 
-            // 更新 Email 按鈕點擊事件
-            document.getElementById("update-email-btn").addEventListener("click", function () {
-                const newEmail = document.getElementById("new-email").value;
-                
-                if (!newEmail) {
-                    alert("請輸入新的電子郵件。");
-                    return;
-                }
-                
-                fetch(`/${memberId}/updateEmail`, {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/x-www-form-urlencoded"
-                    },
-                    body: new URLSearchParams({ newEmail })
-                })
-                .then(response => {
-                    if (response.ok) {
-                        alert("電子郵件更新成功！");
-                        // 更新頁面顯示的 email
-                        document.getElementById("email").textContent = newEmail; 
-                        
-                        // 自動登出
-                        return fetch('/logout', {
-                            method: 'POST',
-                            credentials: 'include' // 需要帶上認證的 Cookie
-                        });
-                    } else if (response.status === 403) {
-                        alert("您沒有權限更新此使用者的電子郵件。");
-                    } else {
-                        alert("電子郵件更新失敗。");
-                    }
-                })
-                .then(logoutResponse => {
-                    if (logoutResponse && logoutResponse.ok) {
-                        // 登出成功後導向登入頁面
-                        window.location.href = '/login.html'; // 轉跳到登入頁面
-                    } else {
-                        alert("登出失敗。");
-                    }
-                })
-                .catch(error => {
-                    console.error("發生錯誤:", error);
-                    alert("電子郵件更新失敗。");
-                });
-            });
-        });
-    </script>
+        <!-- 會員基本資料 -->
+        <section id="user-info-section">
+            <h2>基本資料</h2>
+            <div id="user-info">
+                <p class="info-item">會員名稱: <span id="username"></span></p>
+                <p class="info-item">會員ID: <span id="userid"></span></p>
+                <p class="info-item">電子郵件: <span id="email"></span></p>
+            </div>
+        </section>
+
+        <!-- 重設電子郵件 -->
+        <section id="email-update-section">
+            <h2>重設電子郵件</h2>
+            <input type="email" id="new-email" placeholder="輸入新的電子郵件" required>
+            <button id="update-email-btn">更新</button>
+        </section>
+
+        <!-- 使用者權限 -->
+        <section id="privileges-section">
+            <h2>使用者權限</h2>
+            <div id="privilege-info"></div>
+        </section>
+    </main>
+
+    <script src="/js/nav.js"></script>
+    <script src="/js/profile.js"></script>
 </body>
 </html>

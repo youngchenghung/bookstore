@@ -1,5 +1,7 @@
 package com.example.bookstore.dto;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.example.bookstore.constant.BookCategory;
 
 import jakarta.validation.constraints.NotNull;
@@ -20,6 +22,10 @@ public class BookRequest {
 
     @NotNull
     private Integer stock;
+
+    private MultipartFile image;
+
+    private String imageUrl;
 
     public String getBookName() {
         return bookName;
@@ -50,6 +56,18 @@ public class BookRequest {
     }
     public void setStock(Integer stock) {
         this.stock = stock;
+    }
+    public MultipartFile getImage() {
+        return image;
+    }
+    public void setImage(MultipartFile image) {
+        this.image = image;
+    }
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+    public String getImageUrl() {
+        return imageUrl;
     }
 
 }

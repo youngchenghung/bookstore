@@ -27,6 +27,7 @@ public class BookRowMapper implements RowMapper<Book> {
         book.setStock(resultSet.getInt("stock"));
         book.setCreatedDate(resultSet.getTimestamp("created_date"));
         book.setLastModifiedDate(resultSet.getTimestamp("last_modified_date"));
+        book.setImageUrl(resultSet.getString("image_url"));
 
         return book;
     }

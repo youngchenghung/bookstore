@@ -2,6 +2,7 @@ package com.example.bookstore.dao;
 
 import java.util.List;
 
+import com.example.bookstore.constant.BookCategory;
 import com.example.bookstore.dto.BookQueryParams;
 import com.example.bookstore.dto.BookRequest;
 import com.example.bookstore.model.Book;
@@ -12,7 +13,9 @@ public interface BookDao {
     Book getBookInfoById(Integer bookId);
 
     // 新增書籍
-    Integer addBook(BookRequest bookRequest);
+    // Integer addBook(BookRequest bookRequest);
+    Integer addBook(String bookName, BookCategory bookCategory, String author, Integer price, Integer stock,
+    String imageUrl);
 
     // 更新書籍資訊
     void updateBook(Integer bookId, BookRequest bookRequest);

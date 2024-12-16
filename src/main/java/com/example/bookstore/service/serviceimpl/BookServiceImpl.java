@@ -25,7 +25,14 @@ public class BookServiceImpl implements BookService{
     // 新增書籍 回傳 BookDao.addBook(bookRequest)
     @Override
     public Integer addBook(BookRequest bookRequest) {
-        return bookDao.addBook(bookRequest);
+        return bookDao.addBook(
+            bookRequest.getBookName(),
+            bookRequest.getBookCategory(),
+            bookRequest.getAuthor(),
+            bookRequest.getPrice(),
+            bookRequest.getStock(),
+            bookRequest.getImageUrl()
+        );
     }
 
     // 更新書籍資訊 回傳 BookDao.updateBook(bookId, bookRequest)

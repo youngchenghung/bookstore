@@ -14,6 +14,7 @@ public class Book {
     private Integer stock;
     private Timestamp createdDate;
     private Timestamp lastModifiedDate;
+    private String imageUrl;
     
 
     public Integer getBookId() {
@@ -64,5 +65,10 @@ public class Book {
     public void setLastModifiedDate(Timestamp lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
-
+    public String getImageUrl() {
+        return imageUrl;
+    }
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 }

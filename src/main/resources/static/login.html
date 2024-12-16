@@ -4,32 +4,98 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>登入頁面</title>
+    <style>
+        /* 導覽列的樣式 */
+        nav {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+        nav a {
+            color: #fff;
+            margin: 0 15px;
+            text-decoration: none;
+            font-size: 1.2em;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        /* 頁面主要內容樣式 */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            max-width: 300px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        input[type="text"] {
+            padding: 8px;
+            margin-top: 5px;
+            font-size: 1em;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px;
+            font-size: 1em;
+            color: #fff;
+            background-color: #333;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #555;
+        }
+        /* 錯誤消息樣式 */
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
+
+    <!-- 導覽列 -->
+    <nav>
+        <a href="index.html">首頁</a>
+        <a href="register.html">會員註冊</a>
+    </nav>
+
     <h1>登入</h1>
-    <form action="/login.html" method="post">
-        <div>
-            <label for="username">電子郵件:</label>
-            <input type="text" id="username" name="username" required>
-        </div>
-        <div>
-            <label for="password">密碼:</label>
-            <input type="password" id="password" name="password" required>
-        </div>
-        <div>
-            <button type="submit">登入</button>
-        </div>
+    <form action="/login" method="post">
+        <label for="username">電子郵件:</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="password">密碼:</label>
+        <input type="text" id="password" name="password" required>
+
+        <button type="submit">登入</button>
     </form>
 
     <!-- 顯示錯誤消息 -->
-    <div>
-        <script>
-            // 獲取當前 URL 的查詢參數
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.has('error')) {
-                document.write('<p style="color: red;">登入失敗，請檢查您的電子郵件和密碼。</p>');
-            }
-        </script>
-    </div>
+    <div id="error-message" class="error-message"></div>
+
+    <script>
+        // 獲取當前 URL 的查詢參數
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('error')) {
+            document.getElementById('error-message').innerText = '登入失敗，請檢查您的電子郵件和密碼。';
+        }
+    </script>
+
 </body>
 </html>

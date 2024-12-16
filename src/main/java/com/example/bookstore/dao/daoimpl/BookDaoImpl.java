@@ -11,6 +11,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import com.example.bookstore.model.Book;
 import com.example.bookstore.rowmapper.BookRowMapper;
 import com.mysql.cj.x.protobuf.MysqlxCrud.Limit;
+import com.example.bookstore.constant.BookCategory;
 import com.example.bookstore.dao.BookDao;
 import com.example.bookstore.dto.BookQueryParams;
 import com.example.bookstore.dto.BookRequest;
@@ -30,7 +31,7 @@ public class BookDaoImpl implements BookDao {
     // 查詢書籍資訊 by bookId 
     @Override
     public Book getBookInfoById(Integer bookId) {
-        String sql = "SELECT book_id, category, book_name, author, price, stock, created_date, last_modified_date FROM book WHERE book_id = :bookId";
+        String sql = "SELECT book_id, category, book_name, author, price, stock, image_url, created_date, last_modified_date FROM book WHERE book_id = :bookId";
 
         Map<String, Object> map = new HashMap<>();
         map.put("bookId", bookId);
@@ -45,15 +46,16 @@ public class BookDaoImpl implements BookDao {
 
     // 新增書籍 回傳 bookId
     @Override
-    public Integer addBook(BookRequest bookRequest) {
-        String sql = "INSERT INTO book (book_name, category, author, price, stock, created_date, last_modified_date) VALUES (:bookName, :category, :author, :price, :stock, :createdDate, :lastModifiedDate)";
+    public Integer addBook(String bookName, BookCategory bookCategory, String author, Integer price, Integer stock,String imageUrl) {
+        String sql = "INSERT INTO book (book_name, category, author, price, stock, image_url, created_date, last_modified_date) VALUES (:bookName, :category, :author, :price, :stock, :imageUrl, :createdDate, :lastModifiedDate)";
 
         Map<String, Object> map = new HashMap<>();
-        map.put("bookName", bookRequest.getBookName());
-        map.put("author", bookRequest.getAuthor());
-        map.put("category", bookRequest.getBookCategory().name());
-        map.put("price", bookRequest.getPrice());
-        map.put("stock", bookRequest.getStock());
+        map.put("bookName", bookName);
+        map.put("category", bookCategory.name());
+        map.put("author", author);
+        map.put("price", price);
+        map.put("stock", stock);
+        map.put("imageUrl", imageUrl);
 
         Date now = new Date();
         map.put("createdDate", now);
@@ -71,7 +73,7 @@ public class BookDaoImpl implements BookDao {
     // 更新書籍資訊
     @Override
     public void updateBook(Integer bookId, BookRequest bookRequest) {
-        String sql = "UPDATE book SET book_name = :bookName, category = :category, author = :author, price = :price, stock = :stock, lastModifiedDate = :lastModifiedDate WHERE book_id = :bookId";
+        String sql = "UPDATE book SET book_name = :bookName, category = :category, author = :author, price = :price, stock = :stock, image_url = :image_url, last_modified_date = :lastModifiedDate WHERE book_id = :bookId";
 
         Map<String, Object> map = new HashMap<>();
         map.put("bookId", bookId);
@@ -80,10 +82,11 @@ public class BookDaoImpl implements BookDao {
         map.put("author", bookRequest.getAuthor());
         map.put("price", bookRequest.getPrice());
         map.put("stock", bookRequest.getStock());
+        map.put("image_url", bookRequest.getImageUrl());
         
         Date now = new Date();
         map.put("lastModifiedDate", now);
-
+        
         namedParameterJdbcTemplate.update(sql, map);
     }
 
@@ -113,7 +116,7 @@ public class BookDaoImpl implements BookDao {
     // 查詢書籍列表
     @Override
     public List<Book> getBooks(BookQueryParams bookQueryParams) {
-        String sql = "SELECT book_id, book_name, category, author, price, stock, created_date, last_modified_date FROM book WHERE 1=1";
+        String sql = "SELECT book_id, book_name, category, author, price, stock, image_url, created_date, last_modified_date FROM book WHERE 1=1";
 
         Map<String, Object> map = new HashMap<>();
 

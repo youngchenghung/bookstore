@@ -4,69 +4,159 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>書籍管理系統</title>
+    <style>
+        /* 導覽列的簡單樣式 */
+        nav {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+        }
+        nav a {
+            color: #fff;
+            margin-right: 15px;
+            text-decoration: none;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        /* 訊息框樣式 */
+        .message-box {
+            background-color: #f44336;
+            color: white;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+    </style>
     <script>
+        // 獲取會員名稱並顯示在導航列
+        async function loadMemberName() {
+            try {
+                // 取得 URL 中的 memberId
+                const pathParts = window.location.pathname.split('/');
+                const memberId = pathParts[1]; // URL 格式為 /{memberId}/profile.html
+                const response = await fetch(`/${memberId}/userInfo`);
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('memberName').innerText = `您好, ${data.memberName}`;
+                } else {
+                    // 顯示未登入訊息
+                    document.getElementById('memberName').innerText = '未登入';
+                    showMessage('未登入，請先登入');
+                }
+            } catch (error) {
+                console.error('無法取得會員名稱:', error);
+                document.getElementById('memberName').innerText = '未登入';
+                showMessage('無法取得會員資料');
+            }
+        }
+
+        // 顯示訊息框
+        function showMessage(message) {
+            const messageBox = document.createElement('div');
+            messageBox.className = 'message-box';
+            messageBox.innerText = message;
+            document.body.appendChild(messageBox);
+        }
+
+        // 攔截 401 錯誤並轉跳到登入頁面
+        async function handleRequest(url, options) {
+            try {
+                const response = await fetch(url, options);
+
+                // 如果回應為 401，表示未授權
+                if (response.status === 401) {
+                    // 導向到 login.html
+                    window.location.href = '/login.html';
+                    return null; // 返回 null 或自定義錯誤處理
+                }
+
+                // 正常情況下，解析回應
+                return await response.json();
+            } catch (error) {
+                console.error('請求錯誤:', error);
+                showMessage('請求錯誤，請稍後再試');
+            }
+        }
+
+        // 顯示訊息框的自定義函數
+        function showMessage(message) {
+            alert(message);
+        }
+
+
+        // 查詢書籍資訊
         async function getBookInfo() {
             const bookId = document.getElementById('getBookId').value;
-            const response = await fetch(`/book/${bookId}`);
-            const result = await response.json();
+            const result = await handleRequest(`/book/${bookId}`, { method: 'GET' });
             document.getElementById('output').innerText = JSON.stringify(result, null, 2);
         }
 
+        // 新增書籍
         async function addBook() {
             const bookRequest = {
                 bookName: document.getElementById('addBookName').value,
                 author: document.getElementById('addAuthor').value,
-                category: document.getElementById('addCategory').value,
+                bookCategory: document.getElementById('addCategory').value,
                 price: parseFloat(document.getElementById('addPrice').value),
                 stock: parseInt(document.getElementById('addStock').value),
                 createdDate: new Date().toISOString(),
                 lastedModifiedDate: new Date().toISOString()
             };
-            const response = await fetch(`/book/add`, {
+            const result = await handleRequest('/book/add', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(bookRequest)
             });
-            const result = await response.json();
             document.getElementById('output').innerText = JSON.stringify(result, null, 2);
         }
 
+        // 更新書籍
         async function updateBook() {
             const bookId = document.getElementById('updateBookId').value;
             const bookRequest = {
                 bookName: document.getElementById('updateBookName').value,
                 author: document.getElementById('updateAuthor').value,
-                category: document.getElementById('updateCategory').value,
+                bookCategory: document.getElementById('updateCategory').value,
                 price: parseFloat(document.getElementById('updatePrice').value),
                 stock: parseInt(document.getElementById('updateStock').value),
                 lastedModifiedDate: new Date().toISOString()
             };
-            const response = await fetch(`/book/update/${bookId}`, {
+            const result = await handleRequest(`/book/update/${bookId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(bookRequest)
             });
-            const result = await response.json();
             document.getElementById('output').innerText = JSON.stringify(result, null, 2);
         }
 
+        // 刪除書籍
         async function deleteBook() {
             const bookId = document.getElementById('deleteBookId').value;
-            const response = await fetch(`/book/delete/${bookId}`, { method: 'DELETE' });
-            if (response.ok) {
+            const result = await handleRequest(`/book/delete/${bookId}`, { method: 'DELETE' });
+            if (result) {
                 document.getElementById('output').innerText = `書籍ID ${bookId} 刪除成功`;
-            } else {
-                document.getElementById('output').innerText = `書籍ID ${bookId} 刪除失敗`;
             }
         }
+
+        // 頁面載入時獲取會員名稱
+        document.addEventListener('DOMContentLoaded', loadMemberName);
     </script>
 </head>
 <body>
-    <h1>書籍管理系統</h1>
+    <!-- 導覽列 -->
+    <nav>
+        <a id="homeLink" href="#">首頁</a>
+        <span id="memberName">載入中...</span>
+        <a href="login.html">登入</a>
+    </nav>
+
+    <h1>書籍管理系統 - 使用者專區</h1>
 
     <section>
         <h2>查詢書籍資訊</h2>
@@ -78,6 +168,7 @@
         <h2>新增書籍</h2>
         <input type="text" id="addBookName" placeholder="書名">
         <input type="text" id="addAuthor" placeholder="作者">
+        <input type="text" id="addCategory" placeholder="分類">
         <input type="number" id="addPrice" placeholder="價格">
         <input type="number" id="addStock" placeholder="庫存">
         <button onclick="addBook()">新增書籍</button>
@@ -88,6 +179,7 @@
         <input type="number" id="updateBookId" placeholder="書籍ID">
         <input type="text" id="updateBookName" placeholder="書名">
         <input type="text" id="updateAuthor" placeholder="作者">
+        <input type="text" id="updateCategory" placeholder="分類">
         <input type="number" id="updatePrice" placeholder="價格">
         <input type="number" id="updateStock" placeholder="庫存">
         <button onclick="updateBook()">更新書籍</button>

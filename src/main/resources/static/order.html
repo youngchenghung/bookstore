@@ -2,144 +2,40 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>購物頁面</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        .order-form, .order-list {
-            margin: 20px;
-            padding: 20px;
-            border: 1px solid #ccc;
-        }
-        .order-item {
-            margin-bottom: 10px;
-        }
-    </style>
+    <title>購物訂單</title>
+    <link rel="stylesheet" href="/css/nav.css">
+    <link rel="stylesheet" href="/css/order.css">
 </head>
 <body>
+    <!-- 導覽列 -->
+    <div id="navbar"></div>
 
-    <h1>購物頁面</h1>
+    <main>
+        <!-- 查詢訂單列表 -->
+        <section id="order-list">
+            <h2>我的訂單</h2>
+            <div id="order-results"></div>
+        </section>
 
-    <!-- 訂單建立區 -->
-    <div class="order-form">
-        <h2>建立訂單</h2>
-        <label for="memberId">會員ID:</label>
-        <input type="number" id="memberId" required>
+        <!-- 建立新訂單 -->
+        <section id="create-order-section">
+            <h2>建立新訂單</h2>
+            <label for="product-id">商品ID</label>
+            <input type="number" id="product-id" placeholder="輸入商品ID">
+            <label for="quantity">數量</label>
+            <input type="number" id="quantity" placeholder="輸入數量">
+            <button id="add-to-cart-btn">加入購物車</button>
+            <button id="create-order-btn">建立訂單</button>
+        </section>
 
-        <div id="orderItems">
-            <div class="order-item">
-                <label>商品ID:</label>
-                <input type="number" class="productId" required>
-                <label>數量:</label>
-                <input type="number" class="quantity" required>
-                <button onclick="removeOrderItem(this)">移除商品</button>
-            </div>
-        </div>
-        <button onclick="addOrderItem()">增加商品</button>
-        <button onclick="createOrder()">建立訂單</button>
-    </div>
+        <!-- 購物車清單 -->
+        <section id="cart-list">
+            <h2>購物車</h2>
+            <div id="cart-items"></div>
+        </section>
+    </main>
 
-    <!-- 訂單查詢區 -->
-    <div class="order-list">
-        <h2>查詢訂單</h2>
-        <label for="queryMemberId">會員ID:</label>
-        <input type="number" id="queryMemberId" required>
-        <label for="limit">每頁顯示數量:</label>
-        <input type="number" id="limit" value="10">
-        <label for="offset">偏移量:</label>
-        <input type="number" id="offset" value="0">
-        <button onclick="getOrders()">查詢訂單</button>
-        <div id="orderResults"></div>
-    </div>
-
-    <script>
-        // 增加商品輸入框
-        function addOrderItem() {
-            const orderItemsDiv = document.getElementById('orderItems');
-            const newItem = document.createElement('div');
-            newItem.className = 'order-item';
-            newItem.innerHTML = `
-                <label>商品ID:</label>
-                <input type="number" class="productId" required>
-                <label>數量:</label>
-                <input type="number" class="quantity" required>
-                <button onclick="removeOrderItem(this)">移除商品</button>
-            `;
-            orderItemsDiv.appendChild(newItem);
-        }
-
-        // 移除商品輸入框
-        function removeOrderItem(button) {
-            const orderItem = button.parentElement;
-            orderItem.remove();
-        }
-
-        // 建立訂單
-        async function createOrder() {
-            const memberId = document.getElementById('memberId').value;
-            const orderItems = Array.from(document.querySelectorAll('.order-item')).map(item => {
-                return {
-                    productId: item.querySelector('.productId').value,
-                    quantity: item.querySelector('.quantity').value
-                };
-            });
-
-            const response = await fetch(`member/${memberId}/create-order`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ buyItemList: orderItems })
-            });
-
-            if (response.ok) {
-                const order = await response.json();
-                alert(`訂單建立成功，訂單ID: ${order.orderId}`);
-            } else {
-                alert('建立訂單失敗');
-            }
-        }
-
-        // 查詢訂單
-        async function getOrders() {
-            const memberId = document.getElementById('queryMemberId').value;
-            const limit = document.getElementById('limit').value;
-            const offset = document.getElementById('offset').value;
-
-            const response = await fetch(`member/${memberId}/order-list?limit=${limit}&offset=${offset}`);
-            if (response.ok) {
-                const data = await response.json();
-                displayOrders(data);
-            } else {
-                alert('查詢訂單失敗');
-            }
-        }
-
-        // 顯示查詢結果
-        function displayOrders(data) {
-            const orderResults = document.getElementById('orderResults');
-            orderResults.innerHTML = ''; // 清空先前結果
-
-            data.result.forEach(order => {
-                // 將 ISO 日期格式轉換為 YYYY年MM月DD日 HH:mm 格式
-                const date = new Date(order.createdDate);
-                const formattedDate = date.toLocaleString("zh-TW", {
-                    year: "numeric",
-                    month: "2-digit",
-                    day: "2-digit",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    hour12: false
-                });
-
-                const orderDiv = document.createElement('div');
-                orderDiv.innerHTML = `訂單ID: ${order.orderId}，總金額: ${order.totalAmount}，建立日期: ${formattedDate}`;
-                orderResults.appendChild(orderDiv);
-            });
-        }
-    </script>
-
+    <script src="/js/nav.js"></script>
+    <script src="/js/order.js"></script>
 </body>
 </html>

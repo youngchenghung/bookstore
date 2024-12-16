@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>書籍管理系統</title>
+    <link rel="stylesheet" href="/css/nav.css">
+    <link rel="stylesheet" href="/css/indexLogged.css">
+</head>
+<body>
+    <!-- 導覽列 -->
+    <div id="navbar"></div>
+
+    <h1>書籍管理系統 - 使用者專區</h1>
+
+    <!-- 書籍列表區域 -->
+    <section>
+        <h2>書籍列表</h2>
+        <div id="bookTable">
+            <!-- 書籍列表表格將由 JavaScript 動態生成 -->
+        </div>
+        <button id="prevPageButton">上一頁</button>
+        <button id="nextPageButton">下一頁</button>
+    </section>
+
+    <!-- 新增書籍區域 -->
+    <section>
+        <h2>新增書籍</h2>
+        <form id="addBookForm">
+            <input type="text" id="addBookName" placeholder="書名" required>
+            <input type="text" id="addAuthor" placeholder="作者" required>
+            <select id="addCategory" required>
+                <option value="繪本">繪本</option>
+                <option value="心理勵志">心理勵志</option>
+                <option value="漫畫">漫畫</option>
+                <option value="商業理財">商業理財</option>
+                <option value="自傳">自傳</option>
+            </select>
+            <input type="number" id="addPrice" placeholder="價格" required>
+            <input type="number" id="addStock" placeholder="庫存" required>
+            <input type="file" id="addBookImage" accept="image/*">
+            <button type="button" id="addBookButton">新增書籍</button>
+        </form>
+    </section>
+
+    <!-- 更新書籍區域 -->
+    <section>
+        <h2>更新書籍</h2>
+        <form id="updateBookForm">
+            <input type="number" id="updateBookId" placeholder="書籍ID" required>
+            <input type="text" id="updateBookName" placeholder="書名">
+            <input type="text" id="updateAuthor" placeholder="作者">
+            <select id="updateCategory" required>
+                <option value="繪本">繪本</option>
+                <option value="心理勵志">心理勵志</option>
+                <option value="漫畫">漫畫</option>
+                <option value="商業理財">商業理財</option>
+                <option value="自傳">自傳</option>
+            </select>
+            <input type="number" id="updatePrice" placeholder="價格">
+            <input type="number" id="updateStock" placeholder="庫存">
+            <input type="file" id="updateBookImage" accept="image/*">
+            <button type="button" id="updateBookButton">更新書籍</button>
+        </form>
+    </section>
+
+    <script src="/js/nav.js"></script>
+    <script src="/js/indexLogged.js"></script>
+</body>
+</html>

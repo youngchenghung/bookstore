@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>會員註冊</title>
+    <style>
+        /* 導覽列的樣式 */
+        nav {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+        nav a {
+            color: #fff;
+            margin: 0 15px;
+            text-decoration: none;
+            font-size: 1.2em;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        /* 頁面主要內容樣式 */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            max-width: 300px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        input[type="text"] {
+            padding: 8px;
+            margin-top: 5px;
+            font-size: 1em;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px;
+            font-size: 1em;
+            color: #fff;
+            background-color: #333;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #555;
+        }
+        /* 錯誤消息樣式 */
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 導覽列 -->
+    <nav>
+        <a href="index.html">首頁</a>
+        <a href="login.html">登入</a>
+    </nav>
+
+    <h1>會員註冊</h1>
+    <form id="register-form">
+        <label for="register-name">會員名稱:</label>
+        <input type="text" id="register-name" required>
+
+        <label for="register-email">電子郵件:</label>
+        <input type="text" id="register-email" required>
+
+        <label for="register-password">密碼:</label>
+        <input type="text" id="register-password" required>
+
+        <button type="submit">註冊</button>
+    </form>
+
+    <script>
+        // 會員註冊
+        document.getElementById("register-form").addEventListener("submit", function (event) {
+            event.preventDefault();
+            
+            const name = document.getElementById("register-name").value;
+            const email = document.getElementById("register-email").value;
+            const password = document.getElementById("register-password").value;
+
+            fetch("/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    memberName: name,
+                    email: email,
+                    password: password
+                })
+            })
+            .then(response => {
+                if (response.status === 201) {
+                    return response.json();
+                } else if (response.status === 400) {
+                    alert("註冊失敗：用戶已存在");
+                    throw new Error("User already exists");
+                }
+            })
+            .then(data => {
+                alert("註冊成功，會員ID: " + data);
+            })
+            .catch(error => console.error("註冊錯誤: ", error));
+        });
+    </script>
+</body>
+</html>

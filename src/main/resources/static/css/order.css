@@ -1,0 +1,34 @@
+/* 共用樣式 */
+.item-container {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin: 10px 0;
+    padding: 15px;
+}
+
+.item-container:nth-child(odd) {
+    background-color: #f0f0f0;
+}
+
+/* 訂單列表樣式 */
+#order-list {
+    margin-bottom: 20px;
+}
+
+#order-results .item-container {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* 購物車樣式 */
+#cart-items .item-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.remove-btn {
+    color: red;
+    cursor: pointer;
+    font-weight: bold;
+}

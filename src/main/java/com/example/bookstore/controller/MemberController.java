@@ -1,6 +1,7 @@
 package com.example.bookstore.controller;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import com.example.bookstore.dao.MemberDao;
 import com.example.bookstore.dto.MemberLoginRequest;
 import com.example.bookstore.dto.MemberRegisterRequest;
 import com.example.bookstore.model.Member;
+import com.example.bookstore.model.Role;
 import com.example.bookstore.service.MemberService;
 
 import jakarta.validation.Valid;
@@ -114,18 +116,17 @@ public class MemberController {
 
     // 使用者權限
     @GetMapping("/{memberId}/privilege")
-    public ResponseEntity<?> hello(@PathVariable Integer memberId, Authentication authentication) {
+    public ResponseEntity<List<Role>> getMemberRoles(@PathVariable Integer memberId) {
 
-        String username = authentication.getName();
+        // 查詢使用者的權限
+        List<Role> roles = memberDao.getRolesByMemberId(memberId);
 
-        if (username == null) {
-            // 若未登入，回傳 401 Unauthorized
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        // 若查無此會員，回傳 404 Not Found
+        if (roles == null || roles.isEmpty()) {
+            return ResponseEntity.notFound().build();
         }
 
-        Collection<? extends GrantedAuthority> authenticaties = authentication.getAuthorities();
-
-        return ResponseEntity.status(HttpStatus.OK).body(authenticaties);
+        return ResponseEntity.status(HttpStatus.OK).body(roles);
     }
 
     // 使用者資訊

@@ -31,11 +31,11 @@ public class OrderController {
     private OrderService orderService;
 
     // 查詢購物訂單
-    @GetMapping("member/{memberId}/order-list")
+    @GetMapping("/{memberId}/order-list")
     public ResponseEntity<Page<Order>> getOrders(
             @PathVariable Integer memberId,
             @RequestParam(defaultValue = "dsc") String sort,
-            @RequestParam(defaultValue = "1") @Max(100) @Min(0) Integer limit,
+            @RequestParam(defaultValue = "10") @Max(100) @Min(0) Integer limit,
             @RequestParam(defaultValue = "0") @Min(0) Integer offset) 
             {
                 OrderQueryParams orderQueryParams = new OrderQueryParams();
@@ -57,7 +57,7 @@ public class OrderController {
             }
     
     // 建立購物訂單
-    @PostMapping("member/{memberId}/create-order")
+    @PostMapping("/{memberId}/create-order")
     public ResponseEntity<?> createOrder(
             @PathVariable Integer memberId, 
             @RequestBody @Valid CreateOrderRequest createOrderRequest) 
